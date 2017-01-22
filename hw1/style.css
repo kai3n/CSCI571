@@ -1,0 +1,178 @@
+gold{
+    color: #D4AF37;
+    letter-spacing: 3px;
+}
+html{
+    font-family: "Nanum Gothic";
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+p {
+    font-size: 0.5em;
+}
+input#email{
+    width: 50%;
+    height: 2em;
+}
+#contact{
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #fff;
+    color: white;
+    background-color: #222;
+    font-size: 0.5em;
+
+}
+#contact:hover{
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #fff;
+    color: #222;
+    background-color: white;
+    font-size: 0.5em;
+
+}
+#signup{
+    margin: 10px;
+    padding: 5px;
+    width: 20%;
+    height: 2.5em;
+    border: 1px solid #fff;
+    color: white;
+    background-color: #222;
+
+}
+#signup:hover{
+    margin: 10px;
+    padding: 5px;
+    width: 20%;
+    height: 2.5em;
+    border: 1px solid #fff;
+    color: #222;
+    background-color: white;
+
+}
+#touch{
+    padding: 10px;
+    margin: auto;
+    text-align: center;
+    width: 20%;
+    border: 1px solid #000;
+
+}
+#touch:hover{
+    padding: 10px;
+    margin: auto;
+    text-align: center;
+    width: 20%;
+    border: 1px solid #000;
+    color: white;
+    background-color: #222;
+
+}
+#no {
+    font-size: 2em;
+    text-decoration: underline;
+    padding-bottom: 0.5em;
+    display: inline-block;
+}
+#num {
+    font-size: 4em;
+    display: inline-block;
+
+}
+
+.image{
+    background: url('sayhello.png');
+    margin: auto;
+    padding-top: 5%;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+.imageDes{
+    z-index: 1
+}
+div.location{
+    background-color: #222;
+    color: #EEEEEE;
+    margin: auto;
+    padding: 20px;
+    width: 40%;
+    text-align: center;
+}
+
+.body{
+    text-align: center;
+    background-color: white;
+    width: 100%;
+    height: 60%;
+}
+.footer{
+    background-color: #222;
+    width: 100%;
+    height: 40%;
+}
+
+.divTable{
+	display: table;
+	width: 100%;
+}
+.divTableRow {
+	display: table-row;
+}
+.divTableHeading {
+	background-color: #000;
+	display: table-header-group;
+}
+.divTableCell, .divTableHead {
+    font-size: 0.5em;
+    width:20%;
+    color: white;
+	display: table-cell;
+	padding-top: 10px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+}
+.colspan1 {
+    margin: auto;
+    text-align: center;
+    font-size: 0.5em;
+	border: 1px solid #333;
+    width:40%;
+    height: 20%;
+    color: white;
+	display: table-cell;
+	padding: 20px 20px;
+}
+.colspan2 {
+    text-align: center;
+    font-size: 0.5em;
+	border: 1px solid #333;
+    width:60%;
+    height: 20%;
+    color: white;
+	display: table-cell;
+	padding: 3px 10px;
+}
+.divTableHeading {
+	background-color: #000;
+	display: table-header-group;
+	font-weight: bold;
+}
+.divTableFoot {
+	background-color: #000;
+	display: table-footer-group;
+	font-weight: bold;
+}
+.divTableBody {
+	display: table-row-group;
+}
