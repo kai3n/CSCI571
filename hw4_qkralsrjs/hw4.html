@@ -40,9 +40,17 @@
                             }
                             else if(airlineList.item(j).nodeName == "Hubs") {
                                 htmlText += "<td>"
+								boldFlag = 0
                                 for (k = 0; k < airlineList.item(j).childNodes.length; k++) {
                                     if (airlineList.item(j).childNodes[k].nodeType == ELEMENT_NODE) {
-                                        htmlText += "<li>"+airlineList.item(j).childNodes[k].textContent+"</li>";
+                                        if (boldFlag == 0){
+                                            htmlText += "<li><b>"+airlineList.item(j).childNodes[k].textContent+"</b></li>";
+                                            boldFlag = 1
+										}
+										else{
+                                            htmlText += "<li>"+airlineList.item(j).childNodes[k].textContent+"</li>";
+										}
+
                                     }
                                 }
                                 htmlText += "</td>"
