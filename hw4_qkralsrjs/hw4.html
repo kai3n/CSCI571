@@ -7,54 +7,49 @@
 
 		    try{
                 ELEMENT_NODE = 1; WIDTH = 150; HEIGHT = 75;
+
                 root = xmlDoc.DocumentElement;
                 htmlText = "<html><head></head><body>";
                 htmlText += "<table border='2'>";
-                rows = xmlDoc.getElementsByTagName("Row");
-                data = xmlDoc.getElementsByTagName("Data");
-                rowList = rows.item(0).childNodes;
-			    dataList = data.item(0).childNodes;
+                airlines = xmlDoc.getElementsByTagName("Row");
+                column = xmlDoc.getElementsByTagName("Data");
+                airlineList = airlines.item(0).childNodes;
+			    columnList = column.item(0).childNodes;
                 htmlText += "<tr>";
 
-                for(i = 0; i < data.length; i++){
-                    columnName = data.item(i).textContent;
+                // to generate column names
+                for(i = 0; i < column.length; i++){
+                    columnName = column.item(i).textContent;
                     htmlText += "<th>" + columnName + "</th>";
                 }
-                // end header row
                 htmlText += "</tr>";
 
-                // output the values
-                for(i = 0; i < rows.length; i++){
-                    // do for all rows
-                    // get properties of a network company
-                    rowList = rows.item(i).childNodes;
+				// to generate tuples
+                for(i = 0; i < airlines.length; i++){
+                    airlineList = airlines.item(i).childNodes;
 
-                    // start a new row of Rows
-                    htmlText += "<tr id='Rows'>";
-                    for(j = 0; j < rowList.length; j++){
-                        if(rowList.item(j).nodeType == ELEMENT_NODE){
-                            // handle hyperlinks separately
-                            if(rowList.item(j).nodeName == "HomePage"){
-                                hyperlink = rowList.item(j).firstChild.nodeValue;
-                                htmlText += "<td><a href='" + hyperlink + "'>" + hyperlink + "</a></td>";
+                    htmlText += "<tr>";
+                    for(j = 0; j < airlineList.length; j++){
+                        if(airlineList.item(j).nodeType == ELEMENT_NODE){
+                            if(airlineList.item(j).nodeName == "HomePage"){
+                                link = airlineList.item(j).textContent;
+                                htmlText += "<td><a href='" + link + "'>" + link + "</a></td>";
                             }
-                            // handle images separately
-                            else if(rowList.item(j).nodeName == "Plane"){
-                                htmlText += "<td><img src='" + rowList.item(j).firstChild.nodeValue + "' WIDTH='" + WIDTH + "' HEIGHT='" + HEIGHT + "'></td>";
+                            else if(airlineList.item(j).nodeName == "Plane"){
+                                htmlText += "<td><img src='" + airlineList.item(j).textContent + "' width='" + WIDTH + "' height='" + HEIGHT + "'></td>";
                             }
-                            else if(rowList.item(j).nodeName == "Hubs") {
+                            else if(airlineList.item(j).nodeName == "Hubs") {
                                 htmlText += "<td>"
-                                for (k = 0; k < rowList.item(j).childNodes.length; k++) {
-                                    if (rowList.item(j).childNodes[k].nodeType == ELEMENT_NODE) {
-
-                                        htmlText += "<li>"+rowList.item(j).childNodes[k].firstChild.nodeValue+"</li>";
+                                for (k = 0; k < airlineList.item(j).childNodes.length; k++) {
+                                    if (airlineList.item(j).childNodes[k].nodeType == ELEMENT_NODE) {
+                                        htmlText += "<li>"+airlineList.item(j).childNodes[k].textContent+"</li>";
                                     }
                                 }
                                 htmlText += "</td>"
                             }
                             else {
-                                if(rowList.item(j).firstChild){
-                                    htmlText += "<td>" + rowList.item(j).firstChild.nodeValue + "</td>";
+                                if(airlineList.item(j).textContent){
+                                    htmlText += "<td>" + airlineList.item(j).textContent + "</td>";
                                 }
                                 else{
                                     htmlText += "<td></td>";
