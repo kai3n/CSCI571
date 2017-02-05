@@ -1,21 +1,20 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>CSCI 571 HW4</title>
+	<title>homework 4</title>
 	<script>
-		function generateHTML(xmlDoc){
+		var htmlText="";
 
+		function generateHTML(xmlDoc){
 		    try{
                 ELEMENT_NODE = 1; WIDTH = 150; HEIGHT = 75;
 
-                root = xmlDoc.DocumentElement;
-                htmlText = "<html><head></head><body>";
-                htmlText += "<table border='2'>";
-                airlines = xmlDoc.getElementsByTagName("Row");
-                column = xmlDoc.getElementsByTagName("Data");
-                airlineList = airlines.item(0).childNodes;
-			    columnList = column.item(0).childNodes;
-                htmlText += "<tr>";
+                var root = xmlDoc.DocumentElement;
+                var airlines = xmlDoc.getElementsByTagName("Row");
+                var column = xmlDoc.getElementsByTagName("Data");
+                var airlineList = airlines.item(0).childNodes;
+			    var columnList = column.item(0).childNodes;
+			    htmlText += "<html><head></head><body><table border='2'><tr>";
 
                 // to generate column names
                 for(i = 0; i < column.length; i++){
@@ -27,7 +26,6 @@
 				// to generate tuples
                 for(i = 0; i < airlines.length; i++){
                     airlineList = airlines.item(i).childNodes;
-
                     htmlText += "<tr>";
                     for(j = 0; j < airlineList.length; j++){
                         if(airlineList.item(j).nodeType == ELEMENT_NODE){
@@ -69,7 +67,7 @@
                     htmlText += "</tr>";
                 }
                     htmlText += "</table>";
-                    htmlText += "</body></html>";
+                    htmlText += "<noscript></body></html>";
 
             } catch(ex){
 		        alert('Error in XML file');
@@ -92,18 +90,17 @@
                 xmlDoc = xmlhttp.responseXML;
                 return xmlDoc;
             } catch(ex){
-                return 0
+                return 0;
             }
         }
 
 		function viewXML(what){
 			var URL = what.URL.value;
-			xmlDoc = loadXML(URL);
+			var xmlDoc = loadXML(URL);
 			if (xmlDoc != 0){
 			    if (window.ActiveXObject){
                     //if IE, simply execute script (due to async prop).
                     if (xmlDoc.parseError.errorCode != 0){
-                        generateError(xmlDoc);
                         hWin = window.open("", "Error", "height=600,width=800,scrollbars=yes");
                         hWin.document.write(htmlText);
                     }
@@ -115,13 +112,23 @@
                 }
                 else {
                     //else if FF, execute script once XML object has loaded
-                    xmlDoc.onload=generateHTML(xmlDoc);
-                    hWin = window.open("", "Assignment4", "height=600,width=800,scrollbars=yes");
-                    hWin.document.write(htmlText);
+					try{
+					    if (xmlDoc.getElementsByTagName("Row").length === 0){
+							alert('No airline companies');
+						}
+						else{
+							xmlDoc.onload=generateHTML(xmlDoc);
+							hWin = window.open("", "Assignment4", "height=600,width=800,scrollbars=yes");
+							hWin.document.write(htmlText);
+							hWin.document.close();
+						}
+					} catch(ex){
+					    alert('Error in XML file!');
+					}
                 }
-                hWin.document.close();
             }
             else {
+			    // check file path
 			    alert('The file doesn\'t exist!');
             }
 		}
@@ -151,5 +158,5 @@
 			<input type="button" class="submit" name="submit" value="Submit Query" onClick="viewXML(this.form)">
 		</form>
 	</div>
-</body>
+<noscript></body>
 </html>
