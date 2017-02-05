@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<Mainline>
+  <Table>
+   <Header>
+    <Data>Airline</Data>
+    <Data>IATA</Data>
+    <Data>Hubs</Data>
+    <Data>Notes</Data>
+    <Data>HomePage</Data>
+    <Data>Plane</Data>
+   </Header>
+
+   <Row>
+    <Airline>Alaska Airlines</Airline>
+    <IATA>AS</IATA>
+    <Hubs>
+        <Hub>Seattle/Tacoma</Hub>
+        <Hub>Anchorage</Hub>
+        <Hub>Portland (OR)</Hub>
+        <Hub>San Diego</Hub>
+        <Hub>San Jose</Hub>
+    </Hubs>
+    <Notes>Founded as McGee Airways, and commenced operations in 1944 as Alaska Airlines. Plans have been made for Alaska Airlines to acquire Virgin America.</Notes>
+    <HomePage>https://www.alaskaair.com/</HomePage>
+    <Plane>http://cs-server.usc.edu:45678/hw/hw4/Alaska_Airlines,_Boeing_737.jpg</Plane>
+   </Row>
+
+   <Row>
+    <Airline>American Airlines</Airline>
+    <IATA>AA</IATA>
+    <Hubs>
+        <Hub>Dallas/Fort Worth</Hub>
+        <Hub>Charlotte</Hub>
+        <Hub>Chicago-O'Hare</Hub>
+        <Hub>Los Angeles</Hub>
+        <Hub>Miami</Hub>
+        <Hub>New York-JFK</Hub>
+        <Hub>New York-LaGuardia</Hub>
+        <Hub>Philadelphia</Hub>
+        <Hub>Phoenix</Hub>
+        <Hub>Washington-National</Hub>
+    </Hubs>
+    <Notes>Founded as American Airways; largest airline in the world based on airline company revenue, scheduled passenger miles flown (per year), and fleet size.</Notes>
+    <HomePage>http://www.aa.com</HomePage>
+    <Plane>http://cs-server.usc.edu:45678/hw/hw4/American_Airlines_Boeing_777.png</Plane>
+   </Row>
+
+   <Row>
+    <Airline>Delta Air Lines</Airline>
+    <IATA>DL</IATA>
+    <Hubs>
+        <Hub>Atlanta</Hub>
+        <Hub>Amsterdam</Hub>
+        <Hub>Boston</Hub>
+        <Hub>Detroit</Hub>
+        <Hub>Minneapolis/St Paul</Hub>
+        <Hub>Cincinnati</Hub>
+        <Hub>New York-JFK</Hub>
+        <Hub>New York-LaGuardia</Hub>
+        <Hub>Paris-Charles de Gaulle</Hub>
+        <Hub>Salt Lake City</Hub>
+        <Hub>Seattle</Hub>
+        <Hub>Tokyo-Narita</Hub>
+    </Hubs>
+    <Notes>Founded as Huff Daland Dusters; largest airline in the world based on number of passengers served per year.</Notes>
+    <HomePage>https://www.delta.com</HomePage>
+    <Plane>http://cs-server.usc.edu:45678/hw/hw4/Delta_B747.jpg</Plane>
+   </Row>
+
+   <Row>
+    <Airline>Frontier Airlines</Airline>
+    <IATA>F9</IATA>
+    <Hubs>
+        <Hub>Denver</Hub>
+        <Hub>Atlanta</Hub>
+        <Hub>Chicago-O'Hare</Hub>
+        <Hub>Cleveland</Hub>
+        <Hub>Miami</Hub>
+        <Hub>Orlando</Hub>
+        <Hub>Trenton</Hub>
+        <Hub>Washington-Dulles</Hub>
+    </Hubs>
+    <Notes></Notes>
+    <HomePage>http://www.flyfrontier.com/</HomePage>
+    <Plane>http://cs-server.usc.edu:45678/hw/hw4/Airbus_A320-214,_Frontier_Airlines.jpg</Plane>
+   </Row>
+</Table>
+</Mainline>
