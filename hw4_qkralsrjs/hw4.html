@@ -1,10 +1,152 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Homework 4</title>
+	<meta charset="UTF-8">
+	<title>CSCI 571 HW4</title>
+	<script>
+		function generateHTML(xmlDoc){
+
+		    try{
+                ELEMENT_NODE = 1; WIDTH = 150; HEIGHT = 75;
+                root = xmlDoc.DocumentElement;
+                htmlText = "<html><head></head><body>";
+                htmlText += "<table border='2'>";
+                rows = xmlDoc.getElementsByTagName("Row");
+                data = xmlDoc.getElementsByTagName("Data");
+                rowList = rows.item(0).childNodes;
+			    dataList = data.item(0).childNodes;
+                htmlText += "<tr>";
+
+                for(i = 0; i < data.length; i++){
+                    columnName = data.item(i).textContent;
+                    htmlText += "<th>" + columnName + "</th>";
+                }
+                // end header row
+                htmlText += "</tr>";
+
+                // output the values
+                for(i = 0; i < rows.length; i++){
+                    // do for all rows
+                    // get properties of a network company
+                    rowList = rows.item(i).childNodes;
+
+                    // start a new row of Rows
+                    htmlText += "<tr id='Rows'>";
+                    for(j = 0; j < rowList.length; j++){
+                        if(rowList.item(j).nodeType == ELEMENT_NODE){
+                            // handle hyperlinks separately
+                            if(rowList.item(j).nodeName == "HomePage"){
+                                hyperlink = rowList.item(j).firstChild.nodeValue;
+                                htmlText += "<td><a href='" + hyperlink + "'>" + hyperlink + "</a></td>";
+                            }
+                            // handle images separately
+                            else if(rowList.item(j).nodeName == "Plane"){
+                                htmlText += "<td><img src='" + rowList.item(j).firstChild.nodeValue + "' WIDTH='" + WIDTH + "' HEIGHT='" + HEIGHT + "'></td>";
+                            }
+                            else if(rowList.item(j).nodeName == "Hubs") {
+                                htmlText += "<td>"
+                                for (k = 0; k < rowList.item(j).childNodes.length; k++) {
+                                    if (rowList.item(j).childNodes[k].nodeType == ELEMENT_NODE) {
+
+                                        htmlText += "<li>"+rowList.item(j).childNodes[k].firstChild.nodeValue+"</li>";
+                                    }
+                                }
+                                htmlText += "</td>"
+                            }
+                            else {
+                                if(rowList.item(j).firstChild){
+                                    htmlText += "<td>" + rowList.item(j).firstChild.nodeValue + "</td>";
+                                }
+                                else{
+                                    htmlText += "<td></td>";
+                                }
+
+                            }
+                        }
+                    }
+                    htmlText += "</tr>";
+                }
+                    htmlText += "</table>";
+                    htmlText += "</body></html>";
+
+            } catch(ex){
+		        alert('Error in XML file');
+            }
+		}
+
+		function loadXML(url) {
+            if (window.XMLHttpRequest){
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            }
+            else {
+                // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            // check exist file name
+            try{
+                xmlhttp.open("GET", url, false);
+                xmlhttp.send();
+                xmlDoc = xmlhttp.responseXML;
+                return xmlDoc;
+            } catch(ex){
+                return 0
+            }
+        }
+
+		function viewXML(what){
+			var URL = what.URL.value;
+			xmlDoc = loadXML(URL);
+			if (xmlDoc != 0){
+			    if (window.ActiveXObject){
+                    //if IE, simply execute script (due to async prop).
+                    if (xmlDoc.parseError.errorCode != 0){
+                        generateError(xmlDoc);
+                        hWin = window.open("", "Error", "height=600,width=800,scrollbars=yes");
+                        hWin.document.write(htmlText);
+                    }
+                    else {
+                        generateHTML(xmlDoc);
+                        hWin = window.open("", "Assignment4", "height=800,width=600,scrollbars=yes");
+                        hWin.document.write(htmlText);
+                    }
+                }
+                else {
+                    //else if FF, execute script once XML object has loaded
+                    xmlDoc.onload=generateHTML(xmlDoc);
+                    hWin = window.open("", "Assignment4", "height=600,width=800,scrollbars=yes");
+                    hWin.document.write(htmlText);
+                }
+                hWin.document.close();
+            }
+            else {
+			    alert('The file doesn\'t exist!');
+            }
+		}
+	</script>
 </head>
+<style type="text/css">
+    .center{
+        text-align: center;
+    }
+    .submit{
+        color: #000;
+        background-color: #999;
+        border-color: #888;
+    }
+    .submit:active{
+        color: #fff;
+        background-color: #999;
+        border-color: #888;
+    }
+</style>
 <body>
-Enter URL for Airlines List XML File
+	<div class="center">
+		<br><b>Enter URL for Company List XML File</b><br><br>
+		<form name="myForm">
+			<input type="text" name="URL">
+			<br><br>
+			<input type="button" class="submit" name="submit" value="Submit Query" onClick="viewXML(this.form)">
+		</form>
+	</div>
 </body>
 </html>
