@@ -83,15 +83,23 @@
                 // code for IE6, IE5
                 xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
             }
-            // check exist file name
             try{
                 xmlhttp.open("GET", url, false);
-                xmlhttp.send();
-                xmlDoc = xmlhttp.responseXML;
-                return xmlDoc;
-            } catch(ex){
-                return 0;
-            }
+				xmlhttp.send();
+				xmlDoc = xmlhttp.responseXML;
+				// check exist file name
+				if (xmlDoc) {
+					// check no row
+					if (xmlDoc.getElementsByTagName("Row").length === 0){
+						alert('No airline companies');
+						return 0;
+					}
+					return xmlDoc;
+				}
+			} catch(ex){
+                alert('The file doesn\'t exist!');
+				return 0;
+			}
         }
 
 		function viewXML(what){
@@ -113,23 +121,14 @@
                 else {
                     //else if FF, execute script once XML object has loaded
 					try{
-					    if (xmlDoc.getElementsByTagName("Row").length === 0){
-							alert('No airline companies');
-						}
-						else{
-							xmlDoc.onload=generateHTML(xmlDoc);
-							hWin = window.open("", "Assignment4", "height=600,width=800,scrollbars=yes");
-							hWin.document.write(htmlText);
-							hWin.document.close();
-						}
+						xmlDoc.onload=generateHTML(xmlDoc);
+						hWin = window.open("", "Assignment4", "height=600,width=800,scrollbars=yes");
+						hWin.document.write(htmlText);
+						hWin.document.close();
 					} catch(ex){
 					    alert('Error in XML file!');
 					}
                 }
-            }
-            else {
-			    // check file path
-			    alert('The file doesn\'t exist!');
             }
 		}
 	</script>
