@@ -70,7 +70,8 @@
                     htmlText += "<noscript></body></html>";
 
             } catch(ex){
-		        alert('Error in XML file');
+		        alert('Error in XML File');
+		        return 0;
             }
 		}
 
@@ -87,7 +88,11 @@
                 xmlhttp.open("GET", url, false);
 				xmlhttp.send();
 				xmlDoc = xmlhttp.responseXML;
-				// check exist file name
+
+				if (xmlhttp.status==404 || xmlhttp.status==0){
+					alert("File doesn't exist!");
+					return 0;
+				}
 				if (xmlDoc) {
 					// check no row
 					if (xmlDoc.getElementsByTagName("Row").length === 0){
@@ -96,8 +101,15 @@
 					}
 					return xmlDoc;
 				}
-			} catch(ex){
-                alert('The file doesn\'t exist!');
+				else{
+				    alert("Error in XML file");
+				    return 0;
+				}
+			} catch(exception){
+                // url problem
+                if(exception.name == "NetworkError"){
+                    alert("The File doesn't exist.");
+				}
 				return 0;
 			}
         }
@@ -120,17 +132,16 @@
                 }
                 else {
                     //else if FF, execute script once XML object has loaded
-					try{
-						xmlDoc.onload=generateHTML(xmlDoc);
+					xmlDoc.onload=generateHTML(xmlDoc);
+					if (xmlDoc.onload != 0){
 						hWin = window.open("", "Assignment4", "height=600,width=800,scrollbars=yes");
 						hWin.document.write(htmlText);
 						hWin.document.close();
-					} catch(ex){
-					    alert('Error in XML file!');
 					}
-                }
-            }
+				}
+			}
 		}
+
 	</script>
 </head>
 <style type="text/css">
