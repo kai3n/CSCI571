@@ -4,8 +4,43 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+</style>
 <script type="text/javascript">
-    document.getElementById("keyword").setCustomValidity("aa");
+    function show() {
+        var location = document.getElementById("location");
+        var distance = document.getElementById("distance");
+        if(document.getElementById('searchType').selectedIndex == "4" ) {
+            location.style.display = "block";
+            distance.style.display = "block";
+        }
+        else {
+            location.style.display = "none";
+            distance.style.display = "none";
+        }
+	}
+
+	function toggle(id) {
+        var e = document.getElementById(id);
+        if(e.style.display == "none")
+            e.style.display = "block";
+        else
+            e.style.display = "none";
+    }
+
+    function toggle_class(cls) {
+        var eArray = document.getElementsByClassName(cls);
+        for(var i = 0; i < eArray.length; i++){
+            if(eArray[i].style.display == "none")
+                eArray[i].style.display = "block";
+            else
+                eArray[i].style.display = "none";
+
+        }
+    }
 
 </script>
 <body>
@@ -22,7 +57,7 @@
             </div><br>
             <div class="factor">
                 Type
-                <select name="searchType">
+                <select onchange="show();" id="searchType" name="searchType">
                     <option value="user">Users</option>
                     <option value="page">Pages</option>
                     <option value="event">Events</option>
@@ -30,8 +65,8 @@
                     <option value="place">Places</option>
                 </select>
             </div><br>
-            <div class="factor">Location<input type="text" name="location"></div><br>
-            <div class="factor">Distance(meters)<input type="text" name="distance"></div><br>
+            <div class="factor" id="location" style="display: none;">Location<input type="text" name="location"></div><br>
+            <div class="factor" id="distance" style="display: none;">Distance(meters)<input type="text" name="distance"></div><br>
             <input type="submit" name="search" value="Search">
             <input type="reset" name="clear" value="Clear">
         </form>
@@ -45,7 +80,7 @@
                 $q = "q=";
                 $type = "type=";
                 $fields = "fields=id,name,picture.width(700).height(700)";
-                $access_token = "access_token=EAACEdEose0cBAEPs9szR6zNdktY414kSvo6itIAYqY2QChuNELGBDPpm9ruRqcEtE6w44itJPhtgpX12w2GZCiZC9DiJKlDSPVqRZC9EZCwTK3jp9Fy0amPzhEkdBlCZCLTHYsdvptZCi9EHIEj8vg3ErjwGv4HtfiJZAimaejVDLQKVE11Miq6g4ECZBqAioucZD";
+                $access_token = "access_token=EAAVAONT3U3MBALHbtZCREhQ9yZBOK4ZCrsHoamVZC6bVppddAZBvXSmZAl2zf1w0XX2SeueLZBmZA6C9JQmm0yvIPRo3ULtexVttcHRbzqVSbO5B7PhwDJYP9SVhhG0FHZCfqLVS9Wn4QX1PYmOONffLyRIGOxQg3B77k9kAwIRDFRGUoqEU9VlA4Bm1daTj9eZCUZD";
                 $url= "https://graph.facebook.com/v2.8/search?";
 
                 if($_POST[searchType] == "place"){
@@ -84,24 +119,29 @@
         <!-- facebook API: click detail-->
         <?php
             if (isset($_GET['id'])){
-                echo "<table><tr><th>Albums</th></tr>";
+                echo "<table><tr><th><p onclick=" . "toggle('albums');" . ">Albums</p></th></tr></table>";
                 $fields = "?fields=id,name,picture.width(700).height(700),albums.limit(5){name,photos.limit(2) {name, picture}},posts.limit(5)";
-                $access_token = "access_token=EAACEdEose0cBAEPs9szR6zNdktY414kSvo6itIAYqY2QChuNELGBDPpm9ruRqcEtE6w44itJPhtgpX12w2GZCiZC9DiJKlDSPVqRZC9EZCwTK3jp9Fy0amPzhEkdBlCZCLTHYsdvptZCi9EHIEj8vg3ErjwGv4HtfiJZAimaejVDLQKVE11Miq6g4ECZBqAioucZD";
+                $access_token = "access_token=EAAVAONT3U3MBALHbtZCREhQ9yZBOK4ZCrsHoamVZC6bVppddAZBvXSmZAl2zf1w0XX2SeueLZBmZA6C9JQmm0yvIPRo3ULtexVttcHRbzqVSbO5B7PhwDJYP9SVhhG0FHZCfqLVS9Wn4QX1PYmOONffLyRIGOxQg3B77k9kAwIRDFRGUoqEU9VlA4Bm1daTj9eZCUZD";
                 $url= "https://graph.facebook.com/v2.8/" . $_GET['id'] . $fields . "&" . $access_token;
                 $url = str_replace(' ','%20', $url);
                 $response = file_get_contents($url);
                 $jsonData = json_decode($response);
+                echo "<div id='albums'>";
                 if (isset($jsonData -> albums -> data)){
+                    $cnt = 1;
                     foreach($jsonData -> albums -> data as $each){
-                        echo "<tr><td>" . $each -> name . "</td></tr>";
-                        echo "<tr>";
+                        echo "<div onclick=toggle_class('album" . $cnt . "')>" . $each -> name . "</div>";
+
                         foreach($each -> photos -> data as $data){
-                            echo "<td>" . "<a href='" . $data -> picture . "'><img src='" . $data -> picture . "' height=80px width=80px></a>" . "</td>";
+                            echo "<div class='album" . $cnt . "'>" . "<a href='" . $data -> picture . "'><img src='" . $data -> picture . "' height=80px width=80px></a>" . "</div>";
                         }
-                        echo "</tr>";
+
+                        $cnt++;
                     }
                 }
-                echo "<table><tr><th>Message</th></tr>";
+                echo "</div>";
+                echo "<table><tr><th><p onclick=" . "toggle('posts');" . ">Message</p></th></tr></table>";
+                echo "<table id='posts'>";
                 if (isset($jsonData -> posts -> data)){
                     foreach($jsonData -> posts -> data as $each){
                         echo "<tr><td>" . $each -> message . "</td></tr>";
