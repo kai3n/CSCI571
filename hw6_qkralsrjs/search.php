@@ -5,9 +5,67 @@
     <title>Title</title>
 </head>
 <style>
-    table, th, td {
-        border: 1px solid black;
+    html{
+        font-family: Helvetica, Arial, sans-serif;
     }
+    fb{
+        font-size:25px;
+    }
+
+    th{
+        color: #fff;
+        background-color: #4267b2;
+        border: 1px solid #aaa;
+        text-align: left;
+        padding: 0px
+    }
+    td{
+        border: 1px solid #aaa;
+        text-align: left;
+        padding: 0px
+    }
+    table{
+        width: 100%;
+        border: 1px solid #aaa;
+        border-spacing: 0;
+
+    }
+
+    div#bottom{
+        border: 1px;
+        margin: auto;
+        text-align: left;
+        width: 70%;
+
+    }
+    .data{
+        border: 1px solid #aaa;
+    }
+    .top{
+        color: #222;
+        background-color: #4267b2;
+        border: 2px solid #aaa;
+        margin: auto;
+        text-align: center;
+        width: 50%;
+    }
+    hr{
+    width:90%;
+    }
+    #ab, #msg{
+        color: #fff;
+        background-color: #4267b2;
+        text-align: center;
+
+    }
+    #no_ab, #no_msg{
+        color: #fff;
+        background-color: #4267b2;
+        text-align: center;
+
+    }
+
+
 </style>
 <script type="text/javascript">
     function show() {
@@ -23,8 +81,12 @@
         }
 	}
 
-	function toggle(id) {
+	function toggle_id(id) {
         var e = document.getElementById(id);
+        if(id == "albums")
+            document.getElementById('posts').style.display = "none";
+        if(id == "posts")
+            document.getElementById('albums').style.display = "none";
         if(e.style.display == "none")
             e.style.display = "block";
         else
@@ -42,10 +104,14 @@
         }
     }
 
+    function clear_doc(){
+        window.location.href = './search.php';
+    }
+
 </script>
 <body>
-    <div class="top">Facebook Search</div>
-    <div class="middle">
+    <br><br>
+    <div class="top"><br><fb>Facebook Search</fb><hr>
         <form name="searchForm" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
             <div class="factor">Keyword
                 <input type="text"
@@ -65,38 +131,42 @@
                     <option value="place">Places</option>
                 </select>
             </div><br>
-            <div class="factor" id="location" style="display: none;">Location<input type="text" name="location"></div><br>
-            <div class="factor" id="distance" style="display: none;">Distance(meters)<input type="text" name="distance"></div><br>
+            <div class="factor" id="location" style="display: none;">Location <input type="text" name="location"></div><br>
+            <div class="factor" id="distance" style="display: none;">Distance(meters) <input type="text" name="distance"></div><br>
             <input type="submit" name="search" value="Search">
-            <input type="reset" name="clear" value="Clear">
+            <input type="button" onclick=clear_doc() name="clear" value="Clear">
         </form>
+        <br>
     </div>
-    <div class="bottom">
+    <br><br><br><br>
+    <div id="bottom">
 
         <!-- facebook API: post request-->
         <?php
             if ($_SERVER["REQUEST_METHOD"] == POST){
-                echo "<table><tr><th>Profile Photo</th><th>Name</th><th>Details</th></tr>";
+                echo "<table class='result_list'><tr><th>Profile Photo</th><th>Name</th><th>Details</th></tr>";
                 $q = "q=";
                 $type = "type=";
                 $fields = "fields=id,name,picture.width(700).height(700)";
-                $access_token = "access_token=EAAVAONT3U3MBALHbtZCREhQ9yZBOK4ZCrsHoamVZC6bVppddAZBvXSmZAl2zf1w0XX2SeueLZBmZA6C9JQmm0yvIPRo3ULtexVttcHRbzqVSbO5B7PhwDJYP9SVhhG0FHZCfqLVS9Wn4QX1PYmOONffLyRIGOxQg3B77k9kAwIRDFRGUoqEU9VlA4Bm1daTj9eZCUZD";
+                $access_token = "access_token=EAACEdEose0cBAFNzZAO4RZBewC08zEYZBzhm7BQKN94eTntCfa9q6sQF6eT4baZCiM0HjVdwY7ZAPo5uvaGgdcWAnm9ncGmEJzZCEPpCURrvS7txsKE14wU427OZAcjBKxisatZBq6YoNCgipv2cpRQ38jwbVqW42mbYWa12e3TQGYipxCJ07q9ZC8WZAAnAhr3i8ZD";
                 $url= "https://graph.facebook.com/v2.8/search?";
 
                 if($_POST[searchType] == "place"){
-
-                    $google_access_token = "AIzaSyAT1QKwxisgM8fQypxReHmnxJ2gPTPdB90";
-                    $address = $_POST['location'];
-                    $google_url = "https://maps.googleapis.com/maps/api/geocode/json?address=". $address . "&key=" . $google_access_token;
-                    $google_url = str_replace(' ','%20', $google_url);
-                    $google_response = file_get_contents($google_url);
-                    $google_json_data = json_decode($google_response);
-                    $lat = $google_json_data -> results[0] -> geometry -> location -> lat;
-                    $lng = $google_json_data -> results[0] -> geometry -> location -> lng;
-
-                    $center = "center=" . $lat ."," . $lng;
-                    $distance = "distance=" . $_POST["distance"];
-                    $url .= $q . $_POST["keyword"] . "&" . $type . $_POST[searchType] . "&" . $center . "&" . $distance . "&" . $fields . "&" . $access_token;
+                    if($_POST['location'] != ""){
+                        $google_access_token = "AIzaSyAT1QKwxisgM8fQypxReHmnxJ2gPTPdB90";
+                        $address = $_POST['location'];
+                        $google_url = "https://maps.googleapis.com/maps/api/geocode/json?address=". $address . "&key=" . $google_access_token;
+                        $google_url = str_replace(' ','%20', $google_url);
+                        $google_response = file_get_contents($google_url);
+                        $google_json_data = json_decode($google_response);
+                        $lat = $google_json_data -> results[0] -> geometry -> location -> lat;
+                        $lng = $google_json_data -> results[0] -> geometry -> location -> lng;
+                        $center = "center=" . $lat ."," . $lng;
+                        $distance = "distance=" . $_POST["distance"];
+                        $url .= $q . $_POST["keyword"] . "&" . $type . $_POST[searchType] . "&" . $center . "&" . $distance . "&" . $fields . "&" . $access_token;
+                    }
+                    else
+                        $url .= $q . $_POST["keyword"] . "&" . $type . $_POST[searchType] . "&" . $fields . "&" . $access_token;
                 }
                 else{
                     $url .= $q . $_POST["keyword"] . "&" . $type . $_POST[searchType] . "&" . $fields . "&" . $access_token;
@@ -119,35 +189,41 @@
         <!-- facebook API: click detail-->
         <?php
             if (isset($_GET['id'])){
-                echo "<table><tr><th><p onclick=" . "toggle('albums');" . ">Albums</p></th></tr></table>";
                 $fields = "?fields=id,name,picture.width(700).height(700),albums.limit(5){name,photos.limit(2) {name, picture}},posts.limit(5)";
-                $access_token = "access_token=EAAVAONT3U3MBALHbtZCREhQ9yZBOK4ZCrsHoamVZC6bVppddAZBvXSmZAl2zf1w0XX2SeueLZBmZA6C9JQmm0yvIPRo3ULtexVttcHRbzqVSbO5B7PhwDJYP9SVhhG0FHZCfqLVS9Wn4QX1PYmOONffLyRIGOxQg3B77k9kAwIRDFRGUoqEU9VlA4Bm1daTj9eZCUZD";
+                $access_token = "access_token=EAACEdEose0cBAFNzZAO4RZBewC08zEYZBzhm7BQKN94eTntCfa9q6sQF6eT4baZCiM0HjVdwY7ZAPo5uvaGgdcWAnm9ncGmEJzZCEPpCURrvS7txsKE14wU427OZAcjBKxisatZBq6YoNCgipv2cpRQ38jwbVqW42mbYWa12e3TQGYipxCJ07q9ZC8WZAAnAhr3i8ZD";
                 $url= "https://graph.facebook.com/v2.8/" . $_GET['id'] . $fields . "&" . $access_token;
                 $url = str_replace(' ','%20', $url);
                 $response = file_get_contents($url);
                 $jsonData = json_decode($response);
-                echo "<div id='albums'>";
+
                 if (isset($jsonData -> albums -> data)){
                     $cnt = 1;
+                    echo "<div id='ab' class='data' onclick=" . "toggle_id('albums');" . ">Albums</div>";
+                    echo "<div class='data' id='albums' style='display:none'>";
                     foreach($jsonData -> albums -> data as $each){
-                        echo "<div onclick=toggle_class('album" . $cnt . "')>" . $each -> name . "</div>";
-
+                        echo "<div class='data' onclick=toggle_class('album$cnt')>" . $each -> name . "</div>";
+                        echo "<span class='album$cnt' style='display:none'>";
                         foreach($each -> photos -> data as $data){
-                            echo "<div class='album" . $cnt . "'>" . "<a href='" . $data -> picture . "'><img src='" . $data -> picture . "' height=80px width=80px></a>" . "</div>";
+                            echo "<a href='" . $data -> picture . "'><img src='" . $data -> picture . "' height=80px width=80px></a>";
                         }
-
+                        echo "</span>";
                         $cnt++;
                     }
+                    echo "</div>";
                 }
-                echo "</div>";
-                echo "<table><tr><th><p onclick=" . "toggle('posts');" . ">Message</p></th></tr></table>";
-                echo "<table id='posts'>";
+                else
+                    echo "<div id=no_ab>No Albums</div><br>";
+
                 if (isset($jsonData -> posts -> data)){
+                    echo "<div id='msg' class='data' onclick=" . "toggle_id('posts');" . ">Message</div>";
+                    echo "<div class='data' id='posts' style='display:none'>";
                     foreach($jsonData -> posts -> data as $each){
-                        echo "<tr><td>" . $each -> message . "</td></tr>";
+                        echo "<div class='data'>" . $each -> message . "</div>";
                     }
                 }
-                echo "</table>";
+                else
+                    echo "<div id='no_msg'>No message</div><br>";
+
             }
         ?>
     </div>
