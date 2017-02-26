@@ -109,7 +109,7 @@
     }
 
 </script>
-<body>
+<body onload="show();">
     <br><br>
     <div class="top"><br><fb>Facebook Search</fb><hr>
         <form name="searchForm" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
@@ -119,20 +119,21 @@
                        name="keyword"
                        oninvalid="this.setCustomValidity('This can\'t be left empty')"
                        oninput="this.setCustomValidity('')"
+                       value="<?php if (isset($_POST['keyword'])) echo $_POST['keyword']; ?>"
                        required>
             </div><br>
             <div class="factor">
                 Type
                 <select onchange="show();" id="searchType" name="searchType">
-                    <option value="user">Users</option>
-                    <option value="page">Pages</option>
-                    <option value="event">Events</option>
-                    <option value="group">Groups</option>
-                    <option value="place">Places</option>
+                    <option <?php if (isset($_POST['searchType']) && $_POST['searchType']=="user") echo "selected";?> value="user">Users</option>
+                    <option <?php if (isset($_POST['searchType']) && $_POST['searchType']=="page") echo "selected";?> value="page">Pages</option>
+                    <option <?php if (isset($_POST['searchType']) && $_POST['searchType']=="event") echo "selected";?> value="event">Events</option>
+                    <option <?php if (isset($_POST['searchType']) && $_POST['searchType']=="group") echo "selected";?> value="group">Groups</option>
+                    <option <?php if (isset($_POST['searchType']) && $_POST['searchType']=="place") echo "selected";?> value="place">Places</option>
                 </select>
             </div><br>
-            <div class="factor" id="location" style="display: none;">Location <input type="text" name="location"></div><br>
-            <div class="factor" id="distance" style="display: none;">Distance(meters) <input type="text" name="distance"></div><br>
+            <div class="factor" id="location" style="display: none;">Location <input type="text" name="location" value="<?php if (isset($_POST['location'])) echo $_POST['location']; ?>"></div><br>
+            <div class="factor" id="distance" style="display: none;">Distance(meters) <input type="text" name="distance" value="<?php if (isset($_POST['distance'])) echo $_POST['distance']; ?>"></div><br>
             <input type="submit" name="search" value="Search">
             <input type="button" onclick=clear_doc() name="clear" value="Clear">
         </form>
@@ -148,7 +149,7 @@
                 $q = "q=";
                 $type = "type=";
                 $fields = "fields=id,name,picture.width(700).height(700)";
-                $access_token = "access_token=EAACEdEose0cBAFNzZAO4RZBewC08zEYZBzhm7BQKN94eTntCfa9q6sQF6eT4baZCiM0HjVdwY7ZAPo5uvaGgdcWAnm9ncGmEJzZCEPpCURrvS7txsKE14wU427OZAcjBKxisatZBq6YoNCgipv2cpRQ38jwbVqW42mbYWa12e3TQGYipxCJ07q9ZC8WZAAnAhr3i8ZD";
+                $access_token = "access_token=EAACEdEose0cBAA2jaPaO39rgppPCx6tlPdxWct9FYhWJxyaULE9NaWSyFYGmsEmYVXCtkZBlpjjr1ZBstFGdUn5dtLJZB294K8QzO2L5k6eaxzdJbByi6C7GuBoDNJAVOz2U8MVdiQf8ZCoajZC3zGuA8hDqjJNKT2wWUrdN0WNyzQZBLJuITcEyg8WdFxHZCIZD";
                 $url= "https://graph.facebook.com/v2.8/search?";
 
                 if($_POST[searchType] == "place"){
@@ -177,7 +178,7 @@
                 $jsonData = json_decode($response);
                 foreach($jsonData -> data as $each){
                     echo "<tr>";
-                    echo "<td>" . "<a href='" . $each -> picture -> data -> url . "'><img src='" . $each -> picture -> data -> url . "' height=30px width=40px></a>" . "</td>";
+                    echo "<td>" . "<a target='_blank' href='" . $each -> picture -> data -> url . "'><img src='" . $each -> picture -> data -> url . "' height=30px width=40px></a>" . "</td>";
                     echo "<td>" . $each -> name . "</td>";
                     echo "<td>" . "<a href='" . htmlspecialchars($_SERVER["PHP_SELF"]) . "?id=" . $each -> id . "'>Details</a>" . "</td>";
                     echo "</tr>";
@@ -190,7 +191,7 @@
         <?php
             if (isset($_GET['id'])){
                 $fields = "?fields=id,name,picture.width(700).height(700),albums.limit(5){name,photos.limit(2) {name, picture}},posts.limit(5)";
-                $access_token = "access_token=EAACEdEose0cBAFNzZAO4RZBewC08zEYZBzhm7BQKN94eTntCfa9q6sQF6eT4baZCiM0HjVdwY7ZAPo5uvaGgdcWAnm9ncGmEJzZCEPpCURrvS7txsKE14wU427OZAcjBKxisatZBq6YoNCgipv2cpRQ38jwbVqW42mbYWa12e3TQGYipxCJ07q9ZC8WZAAnAhr3i8ZD";
+                $access_token = "access_token=EAACEdEose0cBAA2jaPaO39rgppPCx6tlPdxWct9FYhWJxyaULE9NaWSyFYGmsEmYVXCtkZBlpjjr1ZBstFGdUn5dtLJZB294K8QzO2L5k6eaxzdJbByi6C7GuBoDNJAVOz2U8MVdiQf8ZCoajZC3zGuA8hDqjJNKT2wWUrdN0WNyzQZBLJuITcEyg8WdFxHZCIZD";
                 $url= "https://graph.facebook.com/v2.8/" . $_GET['id'] . $fields . "&" . $access_token;
                 $url = str_replace(' ','%20', $url);
                 $response = file_get_contents($url);
@@ -204,7 +205,7 @@
                         echo "<div class='data' onclick=toggle_class('album$cnt')>" . $each -> name . "</div>";
                         echo "<span class='album$cnt' style='display:none'>";
                         foreach($each -> photos -> data as $data){
-                            echo "<a href='" . $data -> picture . "'><img src='" . $data -> picture . "' height=80px width=80px></a>";
+                            echo "<a target='_blank' href='" . $data -> picture . "'><img src='" . $data -> picture . "' height=80px width=80px></a>";
                         }
                         echo "</span>";
                         $cnt++;
