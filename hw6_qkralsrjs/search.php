@@ -168,7 +168,6 @@
         <!-- facebook API: post request-->
         <?php
             if ($_SERVER["REQUEST_METHOD"] == "POST"){
-                echo "<table class='result_list'><tr><th>Profile Photo</th><th>Name</th><th>Details</th></tr>";
                 $q = "q=";
                 $type = "type=";
                 $fields = "fields=id,name,picture.width(700).height(700)";
@@ -192,6 +191,9 @@
                     else
                         $url .= $q . $_POST["keyword"] . "&" . $type . $_POST["searchType"] . "&" . $fields . "&" . $access_token;
                 }
+                else if($_POST["searchType"] == "event"){
+                    $url .= $q . $_POST["keyword"] . "&" . $type . $_POST["searchType"] . "&fields=id,name,place,picture&" . $access_token;
+                }
                 else{
                     $url .= $q . $_POST["keyword"] . "&" . $type . $_POST["searchType"] . "&" . $fields . "&" . $access_token;
                 }
@@ -199,12 +201,26 @@
                 $url = str_replace(' ','%20', $url);
                 $response = file_get_contents($url);
                 $jsonData = json_decode($response);
-                foreach($jsonData -> data as $each){
-                    echo "<tr>";
-                    echo "<td>" . "<a target='_blank' href='" . $each -> picture -> data -> url . "'><img src='" . $each -> picture -> data -> url . "' height=30px width=40px></a>" . "</td>";
-                    echo "<td>" . $each -> name . "</td>";
-                    echo "<td>" . "<a href='" . htmlspecialchars($_SERVER["PHP_SELF"]) . "?id=" . $each -> id . "&keyword=" . $_POST['keyword'] . "&searchType=" . $_POST['searchType'] . "&location=" . $_POST['location'] . "&distance=" . $_POST['distance'] . "'>Details</a>" . "</td>";
-                    echo "</tr>";
+                if($_POST["searchType"] != "event"){
+                    echo "<table class='result_list'><tr><th>Profile Photo</th><th>Name</th><th>Details</th></tr>";
+                    foreach($jsonData -> data as $each){
+                        echo "<tr>";
+                        echo "<td>" . "<a target='_blank' href='" . $each -> picture -> data -> url . "'><img src='" . $each -> picture -> data -> url . "' height=30px width=40px></a>" . "</td>";
+                        echo "<td>" . $each -> name . "</td>";
+                        echo "<td>" . "<a href='" . htmlspecialchars($_SERVER["PHP_SELF"]) . "?id=" . $each -> id . "&keyword=" . $_POST['keyword'] . "&searchType=" . $_POST['searchType'] . "&location=" . $_POST['location'] . "&distance=" . $_POST['distance'] . "'>Details</a>" . "</td>";
+                        echo "</tr>";
+                    }
+                }
+                else{
+                    echo "<table class='result_list'><tr><th>Profile Photo</th><th>Name</th><th>Place</th></tr>";
+                    foreach($jsonData -> data as $each){
+                        echo "<tr>";
+                        echo "<td width=10%>" . "<a target='_blank' href='" . $each -> picture -> data -> url . "'><img src='" . $each -> picture -> data -> url . "' height=30px width=40px></a>" . "</td>";
+                        echo "<td width=50%>" . $each -> name . "</td>";
+                        echo "<td width=40%>" . $each -> place -> name . "</td>";
+                        echo "</tr>";
+                    }
+
                 }
                 echo "</table>";
             }
