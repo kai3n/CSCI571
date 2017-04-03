@@ -8,41 +8,214 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular.min.js"></script>
+    <script src="script.js"></script>
   </head>
 
-  <body>
+  <body ng-app="fb" ng-controller="FbCtrl">
     <div class="navbar navbar-default" role="navigation">
       <div class="row">
         <div class="col-lg-3">
             <div class="navbar-header">
-                <a class="navbar-brand"><p class="text-primary">FB Search</p></a>
+                <a class="navbar-brand"><p class="text-primary">{{name}}</p></a>
             </div>
         </div>
         <div class="col-lg-6">
-          <form class="navbar-form">
+          <form name="fbForm" class="navbar-form" ng-submit="fbSearch(fbKeyword,'user', 0)">
             <div class="input-group" style="width:100%">
-              <input type="text" id="keyword" class="form-control" placeholder="Search" name="keyword" required="requred">
+              <input ng-model="fbKeyword" type="text" id="keyword" class="form-control" placeholder="Type something..." name="keyword" required="requred" autofocus>
               <div class="input-group-btn" style="width:10%;">
-                <button class="btn btn-primary" style="background-color: #4267b2;"><span class="glyphicon glyphicon-search"></span></button>
+                <button type="submit" class="btn btn-primary" style="background-color: #4267b2;"><span class="glyphicon glyphicon-search"></span></button>
               </div>
               <div class="input-group-btn" style="width:10%;">
-                <button type="reset" class="btn btn-default"><span>Clear</span></button>
+                <button type="reset" class="btn btn-default" ng-click="clear()"><span>Clear</span></button>
               </div>
             </div>
           </form>
         </div>
       </div>
       <div class="row">
-        <ul class="nav nav-tabs nav-justified">
-          <li class="active"><a href="#">Users</a></li>
-          <li><a href="#">Pages</a></li>
-          <li><a href="#">Events</a></li>
-          <li><a href="#">Places</a></li>
-          <li><a href="#">Groups</a></li>
-          <li><a href="#">Favorites</a></li>
+        <ul class="nav nav-tabs nav-justified" id="tabs">
+            <li class="active"><a id="user" data-toggle="tab" ng-click="fbSearch(fbKeyword,'user', 0)">Users</a></li>
+            <li><a id="page" data-toggle="tab" ng-click="fbSearch(fbKeyword,'page', 0)">Pages</a></li>
+            <li><a id="event" data-toggle="tab" ng-click="fbSearch(fbKeyword,'event', 0)">Events</a></li>
+            <li><a id="place" data-toggle="tab" ng-click="fbSearch(fbKeyword,'place', 0)">Places</a></li>
+            <li><a id="group" data-toggle="tab" ng-click="fbSearch(fbKeyword,'group', 0)">Groups</a></li>
+            <li><a id="favorite" data-toggle="tab" ng-click="fbSearch(fbKeyword,'favorite', 0)">Favorites</a></li>
         </ul>
       </div>
     </div>
+
+  <!-- user response data-->
+  <div class="container-fluid" ng-show="activeUserTab">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Profile photo</th>
+          <th>Name</th>
+          <th>Favorite</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody ng-repeat="item in data">
+        <tr>
+          <td width=10%>{{$index+1}}</td>
+          <td width=20%><img class="img-circle" width="35px" height="35px" src={{item.picture.data.url}}></td>
+          <td width=40%>{{item.name}}</td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="favorite()"><span class="glyphicon glyphicon-star-empty"></span></button></td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="detail(item.id)"><span class="glyphicon glyphicon-chevron-right"></span></button></td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- prev and next button-->
+    <div class="container-fluid" style="text-align:center">
+          <button type="button" class="btn btn-secondary" ng-click="prev()" ng-show="showPrevBtn"><span>Previous</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="next()" ng-show="showNextBtn"><span>Next</span></button>
+
+    </div>
+  </div>
+
+  <!-- page response data-->
+  <div class="container-fluid" ng-show="activePageTab">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Profile photo</th>
+          <th>Name</th>
+          <th>Favorite</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody ng-repeat="item in data">
+        <tr>
+          <td width=10%>{{$index + 1}}</td>
+          <td width=20%><img class="img-circle" width="35px" height="35px" src={{item.picture.data.url}}></td>
+          <td width=40%>{{item.name}}</td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="favorite()"><span class="glyphicon glyphicon-star-empty"></span></button></td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="detail(item.id)"><span class="glyphicon glyphicon-chevron-right"></span></button></td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- prev and next button-->
+    <div class="container-fluid" style="text-align:center">
+          <button type="button" class="btn btn-secondary" ng-click="prev()"><span>Previous</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="next()"><span>Next</span></button>
+    </div>
+  </div>
+
+  <!-- event response data-->
+  <div class="container-fluid" ng-show="activeEventTab">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Profile photo</th>
+          <th>Name</th>
+          <th>Favorite</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody ng-repeat="item in data">
+        <tr>
+          <td width=10%>{{$index + 1}}</td>
+          <td width=20%><img class="img-circle" width="35px" height="35px" src={{item.picture.data.url}}></td>
+          <td width=40%>{{item.name}}</td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="favorite()"><span class="glyphicon glyphicon-star-empty"></span></button></td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="detail()"><span class="glyphicon glyphicon-chevron-right"></span></button></td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- prev and next button-->
+    <div class="container-fluid" style="text-align:center">
+          <button type="button" class="btn btn-secondary" ng-click="prev()"><span>Previous</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="next()"><span>Next</span></button>
+    </div>
+  </div>
+
+  <!-- place response data-->
+  <div class="container-fluid" ng-show="activePlaceTab">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Profile photo</th>
+          <th>Name</th>
+          <th>Favorite</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody ng-repeat="item in data">
+        <tr>
+          <td width=10%>{{$index + 1}}</td>
+          <td width=20%><img class="img-circle" width="35px" height="35px" src={{item.picture.data.url}}></td>
+          <td width=40%>{{item.name}}</td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="favorite()"><span class="glyphicon glyphicon-star-empty"></span></button></td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="detail()"><span class="glyphicon glyphicon-chevron-right"></span></button></td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- prev and next button-->
+    <div class="container-fluid" style="text-align:center">
+          <button type="button" class="btn btn-secondary" ng-click="prev()"><span>Previous</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="next()"><span>Next</span></button>
+    </div>
+  </div>
+
+  <!-- group response data-->
+  <div class="container-fluid" ng-show="activeGroupTab">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Profile photo</th>
+          <th>Name</th>
+          <th>Favorite</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody ng-repeat="item in data">
+        <tr>
+          <td width=10%>{{$index + 1}}</td>
+          <td width=20%><img class="img-circle" width="35px" height="35px" src={{item.picture.data.url}}></td>
+          <td width=40%>{{item.name}}</td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="favorite()"><span class="glyphicon glyphicon-star-empty"></span></button></td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="detail()"><span class="glyphicon glyphicon-chevron-right"></span></button></td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- prev and next button-->
+    <div class="container-fluid" style="text-align:center">
+          <button type="button" class="btn btn-secondary" ng-click="prev()"><span>Previous</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="next()"><span>Next</span></button>
+    </div>
+  </div>
+
+  <!-- favorite response data-->
+  <div class="container-fluid" ng-show="activeFavoriteTab">
+    <div ng-repeat="item in data">
+      {{item.name}}
+    </div>
+  </div>
+
+  <!-- detail response data-->
+  <div class="container-fluid" ng-show="activeDetailTab">
+
+    <div class="container-fluid" style="text-align:left">
+      <button type="button" class="btn btn-secondary" ng-click="back()"><span>Back</span></button>
+
+    </div>
+    <div ng-repeat="album in albums">
+      {{album.name}}
+    </div>
+
+    <div ng-repeat="post in posts">
+      {{post.message}}
+    </div>
+  </div>
+
+
 
   </body>
 
