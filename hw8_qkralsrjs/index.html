@@ -9,7 +9,26 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular.min.js"></script>
+    <script src="https://code.angularjs.org/1.6.3/angular-animate.min.js"></script>
     <script src="script.js"></script>
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '1477987718878067',
+          xfbml      : true,
+          version    : 'v2.8'
+        });
+        FB.AppEvents.logPageView();
+      };
+
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+    </script>
   </head>
 
   <body ng-app="fb" ng-controller="FbCtrl">
@@ -41,14 +60,14 @@
             <li><a id="event" data-toggle="tab" ng-click="fbSearch(fbKeyword,'event', 0)">Events</a></li>
             <li><a id="place" data-toggle="tab" ng-click="fbSearch(fbKeyword,'place', 0)">Places</a></li>
             <li><a id="group" data-toggle="tab" ng-click="fbSearch(fbKeyword,'group', 0)">Groups</a></li>
-            <li><a id="favorite" data-toggle="tab" ng-click="fbSearch(fbKeyword,'favorite', 0)">Favorites</a></li>
+            <li><a id="favorite" data-toggle="tab" ng-click="showFavorite()" style="margin-bottom: 0px;">Favorites</a></li>
         </ul>
       </div>
     </div>
 
   <!-- user response data-->
   <div class="container-fluid" ng-show="activeUserTab">
-    <table class="table table-hover">
+    <table class="table table-hover" style="transition:margin-left 2s">
       <thead>
         <tr>
           <th>#</th>
@@ -63,8 +82,11 @@
           <td width=10%>{{$index+1}}</td>
           <td width=20%><img class="img-circle" width="35px" height="35px" src={{item.picture.data.url}}></td>
           <td width=40%>{{item.name}}</td>
-          <td width=15%><button type="button" class="btn btn-secondary" ng-click="favorite()"><span class="glyphicon glyphicon-star-empty"></span></button></td>
-          <td width=15%><button type="button" class="btn btn-secondary" ng-click="detail(item.id)"><span class="glyphicon glyphicon-chevron-right"></span></button></td>
+          <td width=15%>
+            <button type="button" class="btn btn-secondary" ng-click="saveFavorite(item.picture.data.url, item.name, 'user', item.id)" ng-show="!checkFavorite(item.id)"><span class="glyphicon glyphicon-star-empty"></span></button>
+            <button type="button" class="btn btn-secondary" ng-click="deleteFavorite(item.id)" ng-show="checkFavorite(item.id)"><span class="glyphicon glyphicon-star" style="color:#FFCC00;"></span></button>
+          </td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="detail(item.picture.data.url, item.name, 'user', item.id)"><span class="glyphicon glyphicon-chevron-right"></span></button></td>
         </tr>
       </tbody>
     </table>
@@ -90,18 +112,22 @@
       </thead>
       <tbody ng-repeat="item in data">
         <tr>
-          <td width=10%>{{$index + 1}}</td>
+          <td width=10%>{{$index+1}}</td>
           <td width=20%><img class="img-circle" width="35px" height="35px" src={{item.picture.data.url}}></td>
           <td width=40%>{{item.name}}</td>
-          <td width=15%><button type="button" class="btn btn-secondary" ng-click="favorite()"><span class="glyphicon glyphicon-star-empty"></span></button></td>
-          <td width=15%><button type="button" class="btn btn-secondary" ng-click="detail(item.id)"><span class="glyphicon glyphicon-chevron-right"></span></button></td>
+          <td width=15%>
+            <button type="button" class="btn btn-secondary" ng-click="saveFavorite(item.picture.data.url, item.name, 'page', item.id)" ng-show="!checkFavorite(item.id)"><span class="glyphicon glyphicon-star-empty"></span></button>
+            <button type="button" class="btn btn-secondary" ng-click="deleteFavorite(item.id)" ng-show="checkFavorite(item.id)"><span class="glyphicon glyphicon-star" style="color:#FFCC00;"></span></button>
+          </td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="detail(item.picture.data.url, item.name, 'page', item.id)"><span class="glyphicon glyphicon-chevron-right"></span></button></td>
         </tr>
       </tbody>
     </table>
     <!-- prev and next button-->
     <div class="container-fluid" style="text-align:center">
-          <button type="button" class="btn btn-secondary" ng-click="prev()"><span>Previous</span></button>
-          <button type="button" class="btn btn-secondary" ng-click="next()"><span>Next</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="prev()" ng-show="showPrevBtn"><span>Previous</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="next()" ng-show="showNextBtn"><span>Next</span></button>
+
     </div>
   </div>
 
@@ -119,18 +145,22 @@
       </thead>
       <tbody ng-repeat="item in data">
         <tr>
-          <td width=10%>{{$index + 1}}</td>
+          <td width=10%>{{$index+1}}</td>
           <td width=20%><img class="img-circle" width="35px" height="35px" src={{item.picture.data.url}}></td>
           <td width=40%>{{item.name}}</td>
-          <td width=15%><button type="button" class="btn btn-secondary" ng-click="favorite()"><span class="glyphicon glyphicon-star-empty"></span></button></td>
-          <td width=15%><button type="button" class="btn btn-secondary" ng-click="detail()"><span class="glyphicon glyphicon-chevron-right"></span></button></td>
+          <td width=15%>
+            <button type="button" class="btn btn-secondary" ng-click="saveFavorite(item.picture.data.url, item.name, 'event', item.id)" ng-show="!checkFavorite(item.id)"><span class="glyphicon glyphicon-star-empty"></span></button>
+            <button type="button" class="btn btn-secondary" ng-click="deleteFavorite(item.id)" ng-show="checkFavorite(item.id)"><span class="glyphicon glyphicon-star" style="color:#FFCC00;"></span></button>
+          </td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="detail(item.picture.data.url, item.name, 'event', item.id)"><span class="glyphicon glyphicon-chevron-right"></span></button></td>
         </tr>
       </tbody>
     </table>
     <!-- prev and next button-->
     <div class="container-fluid" style="text-align:center">
-          <button type="button" class="btn btn-secondary" ng-click="prev()"><span>Previous</span></button>
-          <button type="button" class="btn btn-secondary" ng-click="next()"><span>Next</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="prev()" ng-show="showPrevBtn"><span>Previous</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="next()" ng-show="showNextBtn"><span>Next</span></button>
+
     </div>
   </div>
 
@@ -148,18 +178,22 @@
       </thead>
       <tbody ng-repeat="item in data">
         <tr>
-          <td width=10%>{{$index + 1}}</td>
+          <td width=10%>{{$index+1}}</td>
           <td width=20%><img class="img-circle" width="35px" height="35px" src={{item.picture.data.url}}></td>
           <td width=40%>{{item.name}}</td>
-          <td width=15%><button type="button" class="btn btn-secondary" ng-click="favorite()"><span class="glyphicon glyphicon-star-empty"></span></button></td>
-          <td width=15%><button type="button" class="btn btn-secondary" ng-click="detail()"><span class="glyphicon glyphicon-chevron-right"></span></button></td>
+          <td width=15%>
+            <button type="button" class="btn btn-secondary" ng-click="saveFavorite(item.picture.data.url, item.name, 'place', item.id)" ng-show="!checkFavorite(item.id)"><span class="glyphicon glyphicon-star-empty"></span></button>
+            <button type="button" class="btn btn-secondary" ng-click="deleteFavorite(item.id)" ng-show="checkFavorite(item.id)"><span class="glyphicon glyphicon-star" style="color:#FFCC00;"></span></button>
+          </td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="detail(item.picture.data.url, item.name, 'place', item.id)"><span class="glyphicon glyphicon-chevron-right"></span></button></td>
         </tr>
       </tbody>
     </table>
     <!-- prev and next button-->
     <div class="container-fluid" style="text-align:center">
-          <button type="button" class="btn btn-secondary" ng-click="prev()"><span>Previous</span></button>
-          <button type="button" class="btn btn-secondary" ng-click="next()"><span>Next</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="prev()" ng-show="showPrevBtn"><span>Previous</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="next()" ng-show="showNextBtn"><span>Next</span></button>
+
     </div>
   </div>
 
@@ -177,44 +211,158 @@
       </thead>
       <tbody ng-repeat="item in data">
         <tr>
-          <td width=10%>{{$index + 1}}</td>
+          <td width=10%>{{$index+1}}</td>
           <td width=20%><img class="img-circle" width="35px" height="35px" src={{item.picture.data.url}}></td>
           <td width=40%>{{item.name}}</td>
-          <td width=15%><button type="button" class="btn btn-secondary" ng-click="favorite()"><span class="glyphicon glyphicon-star-empty"></span></button></td>
-          <td width=15%><button type="button" class="btn btn-secondary" ng-click="detail()"><span class="glyphicon glyphicon-chevron-right"></span></button></td>
+          <td width=15%>
+            <button type="button" class="btn btn-secondary" ng-click="saveFavorite(item.picture.data.url, item.name, 'group', item.id)" ng-show="!checkFavorite(item.id)"><span class="glyphicon glyphicon-star-empty"></span></button>
+            <button type="button" class="btn btn-secondary" ng-click="deleteFavorite(item.id)" ng-show="checkFavorite(item.id)"><span class="glyphicon glyphicon-star" style="color:#FFCC00;"></span></button>
+          </td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="detail(item.picture.data.url, item.name, 'group', item.id)"><span class="glyphicon glyphicon-chevron-right"></span></button></td>
         </tr>
       </tbody>
     </table>
     <!-- prev and next button-->
     <div class="container-fluid" style="text-align:center">
-          <button type="button" class="btn btn-secondary" ng-click="prev()"><span>Previous</span></button>
-          <button type="button" class="btn btn-secondary" ng-click="next()"><span>Next</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="prev()" ng-show="showPrevBtn"><span>Previous</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="next()" ng-show="showNextBtn"><span>Next</span></button>
+
     </div>
   </div>
 
   <!-- favorite response data-->
   <div class="container-fluid" ng-show="activeFavoriteTab">
-    <div ng-repeat="item in data">
-      {{item.name}}
-    </div>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Profile photo</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Favorite</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody ng-repeat="item in favoriteDatas">
+        <tr>
+          <td width=10%>{{$index+1}}</td>
+          <td width=20%><img class="img-circle" width="35px" height="35px" src={{item[0]}}></td>
+          <td width=40%>{{item[1]}}</td>
+          <td width=10%>{{item[2]}}</td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="deleteFavorite(item[3])"><span class="glyphicon glyphicon-trash"></span></button></td>
+          <td width=15%><button type="button" class="btn btn-secondary" ng-click="detail(item[0], item[1], item[2].slice(0, -1), item[3])"><span class="glyphicon glyphicon-chevron-right"></span></button></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <!-- detail response data-->
   <div class="container-fluid" ng-show="activeDetailTab">
 
-    <div class="container-fluid" style="text-align:left">
-      <button type="button" class="btn btn-secondary" ng-click="back()"><span>Back</span></button>
-
+    <div class="row">
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <div class="text-left">
+          <button type="button" class="btn btn-secondary" ng-click="back()"><span class="glyphicon glyphicon-chevron-left"></span>Back</button>
+        </div>
+      </div>
+      <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+        <div class="text-right" ng-repeat="item in detailInfo">
+          <button type="button" class="btn btn-secondary" ng-click="saveFavorite(item[0], item[1], item[2], item[3])" ng-show="!checkFavorite(item[3])"><span class="glyphicon glyphicon-star-empty"></span></button>
+          <button type="button" class="btn btn-secondary" ng-click="deleteFavorite(item[3])" ng-show="checkFavorite(item[3])"><span class="glyphicon glyphicon-star" style="color:#FFCC00;"></span></button>
+          <button type="button" class="btn btn-secondary" ng-click="share(item[0], item[1])"><img src="http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png" width=20px height=20px></button>
+        </div>
+      </div>
     </div>
-    <div ng-repeat="album in albums">
-      {{album.name}}
-    </div>
+    <br>
+    <div class="row">
+      <!-- Album Penal-->
+      <div class="col-sm-6">
+        <div class="panel panel-default">
+          <div class="panel-heading"><b>Albums</b></div>
+          <div class="panel-body">
+            <!-- progress bar-->
+            <div class="container-fluid">
+              <br>
+              <div class="progress" ng-show="PROCESSING_DETAIL">
+                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                  <span class="sr-only">45% Complete</span>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default" ng-repeat="album in albums" ng-show="activeAlbumPenal">
+              <div class="panel-heading"><a class="toggle" data-toggle="collapse" data-target="{{hashTag+album.id}}">{{album.name}}</a></div>
+              <div id="{{album.id}}" class="collapse">
+                <div class="panel-body" ng-repeat="image in album.photos.data">
+                  <img class="img-responsive img-rounded" src="{{preAddress + image.id + surAddress}}">
+                </div>
+              </div>
+            </div>
+            <div ng-show="!activeAlbumPenal">
+              <div class="panel panel-warning">
+                <div class="panel-heading">
+                  No data found.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Post Penal-->
+      <div class="col-sm-6">
+        <div class="panel panel-default">
+          <div class="panel-heading"><b>Posts</b></div>
+          <div class="panel-body">
+            <!-- progress bar-->
+            <div class="container-fluid">
+              <br>
+              <div class="progress" ng-show="PROCESSING_DETAIL">
+                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                  <span class="sr-only">45% Complete</span>
+                </div>
+              </div>
+            </div>
+            <div ng-repeat="post in posts" ng-show="activePostPenal">
 
-    <div ng-repeat="post in posts">
-      {{post.message}}
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <div class="media">
+                    <div class="media-left">
+                      <img class="d-flex mr-2" src="{{detailPictureUrl}}" width=40px height=40px>
+                    </div>
+                    <div class="media-body">
+                      <h5>{{detailName}}</h5>
+                      <h6>{{post.created_time | date:'yyyy-MM-dd HH:mm:ss'}}</h6>
+                    </div>
+                    <br>
+                    <p>{{post.message}}</p>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+            <div ng-show="!activePostPenal">
+              <div class="panel panel-warning">
+                <div class="panel-heading">
+                  No data found.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- progress bar-->
+  <div class="container-fluid">
+    <br><br><br><br>
+    <div class="progress" ng-show="PROCESSING">
+      <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+        <span class="sr-only">45% Complete</span>
+      </div>
+    </div>
+  </div>
 
 
   </body>
