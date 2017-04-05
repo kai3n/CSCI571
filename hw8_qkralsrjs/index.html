@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Bootstrap Case</title>
+    <title>JamesBook</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -12,7 +12,13 @@
     <script src="https://code.angularjs.org/1.6.3/angular-animate.min.js"></script>
     <script src="script.js"></script>
     <script>
-      
+
+      var latLong;
+        $.getJSON("http://ipinfo.io", function(ipinfo){
+            console.log("Found location ["+ipinfo.loc+"] by ipinfo.io");
+            latLong = ipinfo.loc.split(",");
+        });
+
       window.fbAsyncInit = function() {
         FB.init({
           appId      : '1477987718878067',
@@ -41,9 +47,9 @@
             </div>
         </div>
         <div class="col-lg-6">
-          <form name="fbForm" class="navbar-form" ng-submit="fbSearch(fbKeyword,'user', 0)">
+          <form name="fbForm" class="navbar-form" ng-submit="fbSearch(fbKeyword,activeTab, 0)">
             <div class="input-group" style="width:100%">
-              <input ng-model="fbKeyword" type="text" id="keyword" class="form-control" placeholder="Type something..." name="keyword" required="requred" autofocus>
+              <input ng-model="fbKeyword" type="text" id="keyword" class="form-control" placeholder="Type something..." name="keyword" required="requred" oninvalid="this.setCustomValidity('Type at least one, dude!')" autofocus>
               <div class="input-group-btn" style="width:10%;">
                 <button type="submit" class="btn btn-primary" style="background-color: #4267b2;"><span class="glyphicon glyphicon-search"></span></button>
               </div>
@@ -258,7 +264,7 @@
   </div>
 
   <!-- detail response data-->
-  <div class="container-fluid" ng-show="activeDetailTab">
+  <div class="container-fluid show-hide" ng-show="activeDetailTab">
 
     <div class="row">
       <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
