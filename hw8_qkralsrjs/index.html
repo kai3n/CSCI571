@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="fb" ng-controller="FbCtrl">
   <head>
     <title>JamesBook</title>
     <meta charset="utf-8">
@@ -12,13 +12,6 @@
     <script src="https://code.angularjs.org/1.6.3/angular-animate.min.js"></script>
     <script src="script.js"></script>
     <script>
-
-      var latLong;
-        $.getJSON("http://ipinfo.io", function(ipinfo){
-            console.log("Found location ["+ipinfo.loc+"] by ipinfo.io");
-            latLong = ipinfo.loc.split(",");
-        });
-
       window.fbAsyncInit = function() {
         FB.init({
           appId      : '1477987718878067',
@@ -49,7 +42,7 @@
         <div class="col-lg-6">
           <form name="fbForm" class="navbar-form" ng-submit="fbSearch(fbKeyword,activeTab, 0)">
             <div class="input-group" style="width:100%">
-              <input ng-model="fbKeyword" type="text" id="keyword" class="form-control" placeholder="Type something..." name="keyword" required="requred" oninvalid="this.setCustomValidity('Type at least one, dude!')" autofocus>
+              <input ng-model="fbKeyword" type="text" id="keyword" class="form-control" placeholder="Type something..." name="keyword" required="requred" autofocus>
               <div class="input-group-btn" style="width:10%;">
                 <button type="submit" class="btn btn-primary" style="background-color: #4267b2;"><span class="glyphicon glyphicon-search"></span></button>
               </div>
@@ -74,7 +67,7 @@
 
   <!-- user response data-->
   <div class="container-fluid" ng-show="activeUserTab">
-    <table class="table table-hover" style="transition:margin-left 2s">
+    <table class="table table-hover">
       <thead>
         <tr>
           <th>#</th>
@@ -99,8 +92,8 @@
     </table>
     <!-- prev and next button-->
     <div class="container-fluid" style="text-align:center">
-          <button type="button" class="btn btn-secondary" ng-click="prev()" ng-show="showPrevBtn"><span>Previous</span></button>
-          <button type="button" class="btn btn-secondary" ng-click="next()" ng-show="showNextBtn"><span>Next</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="prev(fbKeyword,'user', offSet-25)" ng-show="showPrevBtn"><span>Previous</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="next(fbKeyword,'user', offSet+25)" ng-show="showNextBtn"><span>Next</span></button>
 
     </div>
   </div>
@@ -132,8 +125,8 @@
     </table>
     <!-- prev and next button-->
     <div class="container-fluid" style="text-align:center">
-          <button type="button" class="btn btn-secondary" ng-click="prev()" ng-show="showPrevBtn"><span>Previous</span></button>
-          <button type="button" class="btn btn-secondary" ng-click="next()" ng-show="showNextBtn"><span>Next</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="prev(fbKeyword,'page', offSet-25)" ng-show="showPrevBtn"><span>Previous</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="next(fbKeyword,'page', offSet+25)" ng-show="showNextBtn"><span>Next</span></button>
 
     </div>
   </div>
@@ -165,8 +158,8 @@
     </table>
     <!-- prev and next button-->
     <div class="container-fluid" style="text-align:center">
-          <button type="button" class="btn btn-secondary" ng-click="prev()" ng-show="showPrevBtn"><span>Previous</span></button>
-          <button type="button" class="btn btn-secondary" ng-click="next()" ng-show="showNextBtn"><span>Next</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="prev(fbKeyword,'event', offSet-25)" ng-show="showPrevBtn"><span>Previous</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="next(fbKeyword,'event', offSet+25)" ng-show="showNextBtn"><span>Next</span></button>
 
     </div>
   </div>
@@ -198,8 +191,8 @@
     </table>
     <!-- prev and next button-->
     <div class="container-fluid" style="text-align:center">
-          <button type="button" class="btn btn-secondary" ng-click="prev()" ng-show="showPrevBtn"><span>Previous</span></button>
-          <button type="button" class="btn btn-secondary" ng-click="next()" ng-show="showNextBtn"><span>Next</span></button>
+          <!-- <button type="button" class="btn btn-secondary" ng-click="prev(fbKeyword,'place', offSet-25)" ng-show="showPrevBtn"><span>Previous</span></button> -->
+          <button type="button" class="btn btn-secondary" ng-click="next(fbKeyword,'place', offSet)" ng-show="showNextBtn"><span>Next</span></button>
 
     </div>
   </div>
@@ -231,8 +224,8 @@
     </table>
     <!-- prev and next button-->
     <div class="container-fluid" style="text-align:center">
-          <button type="button" class="btn btn-secondary" ng-click="prev()" ng-show="showPrevBtn"><span>Previous</span></button>
-          <button type="button" class="btn btn-secondary" ng-click="next()" ng-show="showNextBtn"><span>Next</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="prev(fbKeyword,'group', offSet-25)" ng-show="showPrevBtn"><span>Previous</span></button>
+          <button type="button" class="btn btn-secondary" ng-click="next(fbKeyword,'group', offSet+25)" ng-show="showNextBtn"><span>Next</span></button>
 
     </div>
   </div>
