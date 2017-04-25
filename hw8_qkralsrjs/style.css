@@ -1,0 +1,90 @@
+*:not(img) {
+  border-radius: 0 !important;
+}
+
+.nav-tabs.nav-justified>li>a,
+.nav-tabs.nav-justified>.active>a,
+.nav-tabs.nav-justified>.active>a:focus,
+.nav-tabs.nav-justified>.active>a:hover {
+  border: 0px;
+
+}
+
+.nav-tabs > li.active > a{
+  color: #fff;
+  background-color: #4267b2;
+}
+
+.nav-tabs > li.active > a:hover{
+  color: #fff;
+  background-color: #4267b2;
+}
+
+li > a{
+  color: #000;
+}
+
+p.text-primary {
+  color: #4267b2;
+}
+
+.btn-default {
+    color: #4267b2;
+    background-color: #fff;
+    border-color: #4267b2;
+}
+
+.navbar-default {
+    border-bottom: 2px solid #4267b2;
+}
+
+.navbar-form {
+  border: 0px;
+}
+
+.container-fluid > button.btn, td > button.btn{
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+.col-lg-4 > .text-left > button.btn, .col-lg-8 > .text-right > button.btn{
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+h5, h6{
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+
+.toggle {
+  color: black;
+}
+
+.show-hide {
+        transition: all 0.5s linear;
+}
+
+.show-hide.ng-hide {
+      transform: translateX(300%);
+}
+
+.show-hide-back {
+        transition: all 1s linear;
+}
+
+.show-hide-back.ng-hide {
+      transform: translateX(-300%);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
